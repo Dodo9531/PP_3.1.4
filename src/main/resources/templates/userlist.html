@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <title>Admin panel</title>
+</head>
+<body style="background-color: #f7f7f7">
+
+
+<header style="height: 1%;">
+    <div style="background-color:#343a40;color: white;width: 95%;float: left;height: 50px;padding: 12px"
+         th:object="${logged_user}">
+        <b th:utext="${logged_user.username} "></b>
+        <a> with roles:</a>
+        <a th:utext="${logged_user.getRolesNames()}"></a>
+    </div>
+    <div style="background-color:#343a40;color: grey;width: 5%;float: right;height: 50px;padding-top: 12px"><a
+            style="color: grey"
+            th:href="@{/logout}">Logout</a></div>
+</header>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+<script type="text/javascript">
+    $(document).on('click', '.edit-button', function () {
+        var id = $(this).data('id');
+        var username = $(this).data('username');
+        var name = $(this).data('name');
+        var surname = $(this).data('surname');
+
+        $('#updateid').val(id);
+        $('#displayid').val(id);
+        $('#update_username').val(username);
+        $('#updatepassword').val("");
+        $('#updatename').val(name);
+        $('#updatesurname').val(surname);
+
+        $('#editmodal').modal('show');
+    });
+</script>
+<script type="text/javascript">
+    $(document).on('click', '.delete-button', function () {
+        var id = $(this).data('id');
+        var username = $(this).data('username');
+        var name = $(this).data('name');
+        var surname = $(this).data('surname');
+        $('#delete_userid').val(id)
+        $('#displayid2').val(id);
+        $('#delete_username').val(username);
+        $('#deletename').val(name);
+        $('#deletesurname').val(surname);
+        $('#deletemodal').modal('show');
+    });
+</script>
+<div style="width: 100%">
+    <div style="float:left; width: 15%;background-color: white;height: 920px">
+        <nav class="nav flex-column nav-pills">
+            <a class="flex-sm-fill nav-link active">Admin</a>
+            <a class="flex-sm-fill nav-link" th:href="@{/user}">User</a>
+        </nav>
+
+    </div>
+    <div style="padding-left:50px;float:right;width: 85%; ">
+        <div style="font-size: xx-large;margin-bottom: 15px"><b>Admin panel</b></div>
+        <ul style="width: 90%;" class="nav nav-tabs">
+            <li class="nav-item">
+                <a data-toggle="tab"
+                   class="nav-link active"
+                   id="tab1"
+                   href="#tabs1"
+                   role="tab"
+                   aria-controls="tabs1"
+                   aria-selected="true">Users table</a>
+            </li>
+            <li class="nav-item">
+                <a data-toggle="tab"
+                   class="nav-link"
+                   id="tab2"
+                   href="#tabs2"
+                   role="tab"
+                   aria-controls="tabs2"
+                   aria-selected="false"
+                > New User</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="ex1-content">
+            <div
+                    class="tab-pane fade show active"
+                    id="tabs1"
+                    role="tabpanel"
+                    aria-labelledby="tab1"
+            >
+                <div style="border: 1px solid lightgrey;width: 90%;">
+                    <div style="border-bottom: 1px solid lightgrey;background-color: #f7f7f7">
+                        <b style="margin: 15px"><font size="5">All users</font></b>
+                    </div>
+                    <div style="background-color: white;width: 100%;padding: 2%;">
+                        <table style="padding: 15px;" class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th th:scope="col">Id</th>
+                                <th th:scope="col">Username</th>
+                                <th th:scope="col">Name</th>
+                                <th th:scope="col">Surname</th>
+                                <th th:scope="col">Roles</th>
+                                <th th:scope="col">Edit</th>
+                                <th th:scope="col">Delete</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="user : ${users}">
+                                <td><a th:utext="${user?.id}"></a></td>
+                                <td><a th:utext="${user?.username}"></a></td>
+                                <td><a th:utext="${user?.name}"></a></td>
+                                <td><a th:utext="${user?.surname}"></a></td>
+                                <td><a th:utext="${user?.getRolesNames()}"></a></td>
+                                <td>
+                                    <button type="button" class="btn btn-info edit-button"
+                                            th:attr="data-id=${user?.id}, data-username=${user?.username}, data-name=${user?.name}, data-surname=${user?.surname}">
+                                        Edit
+                                    </button>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-danger delete-button"
+                                            th:attr="data-id=${user?.id}, data-username=${user?.username}, data-name=${user?.name}, data-surname=${user?.surname}">
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="tabs2" role="tabpanel" aria-labelledby="tab2">
+                <div style="border: 1px solid lightgrey;width: 90%;">
+                    <div style="border-bottom: 1px solid lightgrey;background-color: #f7f7f7">
+                        <b style="margin: 15px"><font size="5">Add new user</font></b>
+                    </div>
+                    <div style="background-color: white;width: 100%;padding: 2%;text-align-last: center">
+                        <form style="display: inline-grid;" th:method="POST" th:action="@{/admin/users/add}"
+                              th:object="${user}">
+                            <label for="username">Username: </label>
+                            <input type="text" th:field="*{username}" id="username"/>
+                            <br/>
+                            <label for="password">Password: </label>
+                            <input type="text" th:field="*{password}" id="password"/>
+                            <br/>
+                            <label for="name">Name: </label>
+                            <input type="text" th:field="*{name}" id="name"/>
+                            <br>
+                            <label for="surname">Surname: </label>
+                            <input type="text" th:field="*{surname}" id="surname"/>
+                            <br/>
+                            <label for="roles">Select role</label>
+                            <select name="roles" style="height: 50px" id="roles" class="form-select" multiple
+                                    aria-label="multiple select example">
+                                <option value="1">ADMIN</option>
+                                <option value="2">USER</option>
+                            </select>
+                            <br/>
+                            <button type="submit" class="btn btn-success">Add new user</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="editmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenteredLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenteredLabel">Edit user</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div style="text-align-last: center;padding: 0px;" class="modal-body">
+                    <form style="display: inline-grid; width: 100%" th:method="POST" th:action="@{/admin/users/update}"
+                          th:object="${update_user}">
+                        <label for="updateid">ID: </label>
+                        <input type="hidden" th:field="${update_user.id}" id="updateid"/>
+                        <input disabled style="margin-left: 26%; width: 50%" type="text" th:value="${update_user.id}"
+                               id="displayid"/>
+                        <br/>
+                        <label for="username">Username: </label>
+                        <input style="margin-left: 26%;width: 50%" type="text" th:value="${username}"
+                               th:field="*{username}" id="update_username"/>
+                        <br/>
+                        <label for="password">Password: </label>
+                        <input style="margin-left: 26%;width: 50%;" type="text" th:field="*{password}"
+                               id="updatepassword"/>
+                        <br/>
+                        <label for="name">Name: </label>
+                        <input style="margin-left: 26%;width: 50%;" type="text" th:value="${name}" th:field="*{name}"
+                               id="updatename"/>
+                        <br>
+                        <label for="surname">Surname: </label>
+                        <input style="margin-left: 26%;width: 50%;" type="text" th:value="${surname}"
+                               th:field="*{surname}" id="updatesurname"/>
+                        <br/>
+                        <label for="updateroles">Select role</label>
+                        <select style="margin-left: 26%;width: 50%;height: 50px" name="updateroles" id="updateroles"
+                                class="form-select" multiple aria-label="multiple select example">
+                            <option value="1">ADMIN</option>
+                            <option value="2">USER</option>
+                        </select>
+                        <br style="border-bottom: 1px solid lightgrey"/>
+                        <div style="float: right" class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Edit</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="deletemodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenteredLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalCentered">Delete user</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div style="text-align-last: center;padding: 0px;" class="modal-body">
+                <form style="display: inline-grid; width: 100%" th:method="POST" th:action="@{/admin/users/delete}"
+                      th:object="${delete_user}">
+                    <label for="delete_userid">ID: </label>
+                    <input type="hidden" th:field="${delete_user.id}" id="delete_userid"/>
+                    <input disabled style="margin-left: 26%; width: 50%" type="text" th:value="${delete_user.id}"
+                           id="displayid2"/>
+                    <br/>
+                    <label for="username">Username: </label>
+                    <input disabled style="margin-left: 26%;width: 50%" type="text" th:value="${username}"
+                           th:field="*{username}" id="delete_username"/>
+                    <br/>
+                    <label for="name">Name: </label>
+                    <input disabled style="margin-left: 26%;width: 50%;" type="text" th:value="${name}"
+                           th:field="*{name}"
+                           id="deletename"/>
+                    <br>
+                    <label for="surname">Surname: </label>
+                    <input disabled style="margin-left: 26%;width: 50%;" type="text" th:value="${surname}"
+                           th:field="*{surname}" id="deletesurname"/>
+                    <br/>
+                    <label for="deleteroles">Select role</label>
+                    <select disabled style="margin-left: 26%;width: 50%;height: 50px" name="deleteroles" id="deleteroles"
+                            class="form-select" multiple aria-label="multiple select example">
+                        <option value="1">ADMIN</option>
+                        <option value="2">USER</option>
+                    </select>
+                    <br style="border-bottom: 1px solid lightgrey"/>
+                    <div style="float: right" class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div style="clear:both"></div>
+
+</body>
+</html>
