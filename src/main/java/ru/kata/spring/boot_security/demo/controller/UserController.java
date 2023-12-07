@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
+import ru.kata.spring.boot_security.demo.services.RoleService;
 import ru.kata.spring.boot_security.demo.services.UserService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,7 +29,7 @@ public class UserController {
     @Autowired
     private UserService userService;
     @Autowired
-    private RoleRepository roleRepository;
+    private RoleService roleService;
 
     @GetMapping(value = "/")
     public String index() {
@@ -80,15 +81,14 @@ public class UserController {
     }
 
     private void setRolesToUser(int roleid, User user, int opid) {
-        Role userRole = roleRepository.getById(2);
-        Role adminRole = roleRepository.getById(1);
+        Role userRole = roleService.getById(2);
+        Role adminRole = roleService.getById(1);
 
         HashSet<Role> userRoles = new HashSet<>();
         HashSet<Role> adminRoles = new HashSet<>();
 
         userRoles.add(userRole);
         adminRoles.add(adminRole);
-        adminRoles.add(userRole);
         if(roleid == 1) {
             user.setRoles(adminRoles);
         }
